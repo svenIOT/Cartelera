@@ -1,7 +1,7 @@
-import 'package:cartelera/src/pages/film_details.dart';
 import 'package:flutter/material.dart';
 
 import 'package:cartelera/src/pages/home_page.dart';
+import 'package:cartelera/src/pages/film_details.dart';
 
 void main() => runApp(MyApp());
 

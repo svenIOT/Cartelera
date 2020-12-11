@@ -6,22 +6,16 @@ import 'package:cartelera/src/providers/films_provider.dart';
 class DataSearch extends SearchDelegate {
   String selection = '';
 
-  final films = [
-    'Spiderman',
-    'Aquaman',
-    'Jiu Jitsu',
-    'Tenet',
-    'Mulan',
-    'Joker'
-  ];
-
-  final recentFilms = ['Jiu Jitsu', 'Tenet'];
-
   final filmsProvider = new FilmsProvider();
 
   @override
-  List<Widget> buildActions(BuildContext context) =>
-      [IconButton(icon: Icon(Icons.clear), onPressed: () {})];
+  List<Widget> buildActions(BuildContext context) => [
+        IconButton(
+            icon: Icon(Icons.clear),
+            onPressed: () {
+              query = '';
+            })
+      ];
 
   @override
   Widget buildLeading(BuildContext context) => IconButton(
@@ -65,21 +59,5 @@ class DataSearch extends SearchDelegate {
                             ))
                         .toList())
                 : Center(child: CircularProgressIndicator()));
-
-    /*final suggestedList = (query.isEmpty)
-        ? recentFilms
-        : films
-            .where((f) => f.toLowerCase().startsWith(query.toLowerCase()))
-            .toList();
-
-    return ListView.builder(
-        itemCount: suggestedList.length,
-        itemBuilder: (context, index) => ListTile(
-            leading: Icon(Icons.movie),
-            title: Text(suggestedList[index]),
-            onTap: () {
-              selection = suggestedList[index];
-              showResults(context);
-            }));*/
   }
 }
