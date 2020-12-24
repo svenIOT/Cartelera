@@ -4,10 +4,13 @@ import 'package:http/http.dart' as http;
 
 import 'package:cartelera/src/models/actor_model.dart';
 import 'package:cartelera/src/models/film_model.dart';
+import 'package:flutter_config/flutter_config.dart';
 
 class FilmsProvider {
-  String _apikey = '3e593ea4dfd7378d8d9fc28d6f1dff85';
-  String _url = 'api.themoviedb.org';
+  String _apikey = FlutterConfig.get('FABRIC_ID');
+  //'3e593ea4dfd7378d8d9fc28d6f1dff85';
+  String _url = FlutterConfig.get('API_URL');
+  //'api.themoviedb.org';
   String _language = 'es-ES';
 
   int _popularPages = 0;
