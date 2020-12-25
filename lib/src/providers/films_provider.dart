@@ -4,13 +4,12 @@ import 'package:http/http.dart' as http;
 
 import 'package:cartelera/src/models/actor_model.dart';
 import 'package:cartelera/src/models/film_model.dart';
+import 'package:cartelera/src/models/genre_model.dart';
 import 'package:flutter_config/flutter_config.dart';
 
 class FilmsProvider {
   String _apikey = FlutterConfig.get('FABRIC_ID');
-  //'3e593ea4dfd7378d8d9fc28d6f1dff85';
   String _url = FlutterConfig.get('API_URL');
-  //'api.themoviedb.org';
   String _language = 'es-ES';
 
   int _popularPages = 0;
@@ -84,5 +83,25 @@ class FilmsProvider {
         {'api_key': _apikey, 'language': _language, 'query': query});
 
     return await _responseProcess(url);
+  }
+
+  Future<List<Genre>> getGenres(List<int> genresIds) async {
+    final url = Uri.https(_url, '3/genre/movie/list',
+        {'api_key': _apikey, 'language': _language});
+
+    final response = await http.get(url);
+
+    final decodedData = json.decode(response.body);
+
+    final cast = new Genres.fromJsonList(decodedData['genres']);
+
+    List<Genre> genres = new List<Genre>();
+
+    for (var id in genresIds) {
+      genres.add(
+          cast.genres.where((element) => element.id == id).toList().single);
+    }
+
+    return genres;
   }
 }

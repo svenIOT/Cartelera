@@ -18,6 +18,7 @@ class FilmDetails extends StatelessWidget {
           SizedBox(height: 10.0),
           _bannerTitle(context, film),
           _description(film),
+          _genres(film),
           _createActors(film)
         ]))
       ],
@@ -62,18 +63,31 @@ class FilmDetails extends StatelessWidget {
               Row(
                 children: <Widget>[
                   Text(
-                    film.title,
-                    style: Theme.of(context).textTheme.subtitle1,
+                    film.releaseDate.substring(0, 4),
+                    style: Theme.of(context).textTheme.headline4,
                     overflow: TextOverflow.ellipsis,
+                  )
+                ],
+              ),
+              Row(
+                children: <Widget>[
+                  Expanded(
+                    child: Text(
+                      film.title,
+                      style: Theme.of(context).textTheme.subtitle1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
                 ],
               ),
               Row(
                 children: <Widget>[
-                  Text(
-                    film.originalTitle,
-                    style: Theme.of(context).textTheme.subtitle2,
-                    overflow: TextOverflow.ellipsis,
+                  Expanded(
+                    child: Text(
+                      film.originalTitle,
+                      style: Theme.of(context).textTheme.subtitle2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
                 ],
               ),
@@ -110,22 +124,55 @@ class FilmDetails extends StatelessWidget {
           controller: PageController(initialPage: 1, viewportFraction: 0.3),
           itemCount: actors.length,
           itemBuilder: (context, index) => _actorCard(actors[index])));
-}
 
-Widget _actorCard(Actor actor) => Container(
+  Widget _actorCard(Actor actor) => Container(
+        child: Column(
+          children: <Widget>[
+            ClipRRect(
+                borderRadius: BorderRadius.circular(20.0),
+                child: FadeInImage(
+                    placeholder: AssetImage('assets/img/loading.gif'),
+                    image: NetworkImage(actor.getActorImg()),
+                    height: 150.0,
+                    fit: BoxFit.cover)),
+            Text(
+              actor.name,
+              overflow: TextOverflow.ellipsis,
+            )
+          ],
+        ),
+      );
+
+  Widget _genres(Film film) {
+    final filmProvider = new FilmsProvider();
+    return FutureBuilder(
+        future: filmProvider.getGenres(film.genreIds),
+        builder: (context, AsyncSnapshot<List> snapshot) {
+          List<String> genres = new List<String>();
+          if (snapshot.hasData) {
+            snapshot.data.forEach((element) {
+              genres.add(element.name);
+            });
+            return _genresList(genres);
+          } else {
+            return Center(child: CircularProgressIndicator());
+          }
+        });
+  }
+
+  Widget _genresList(List<String> genres) => Container(
+      padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 15.0),
       child: Column(
-        children: <Widget>[
-          ClipRRect(
-              borderRadius: BorderRadius.circular(20.0),
-              child: FadeInImage(
-                  placeholder: AssetImage('assets/img/loading.gif'),
-                  image: NetworkImage(actor.getActorImg()),
-                  height: 150.0,
-                  fit: BoxFit.cover)),
-          Text(
-            actor.name,
-            overflow: TextOverflow.ellipsis,
+        children: [
+          Row(
+            children: [
+              Text('Géneros: ', style: TextStyle(fontWeight: FontWeight.bold)),
+              Text(genres.toString()),
+            ],
+          ),
+          SizedBox(
+            height: 10.0,
           )
         ],
-      ),
-    );
+      ));
+}
